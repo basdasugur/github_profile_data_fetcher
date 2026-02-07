@@ -38,6 +38,29 @@ if response.status_code == 200:
     print(f"📦 Repos : {public_repos}")
     print(f"👥 Followers : {followers}")
     print(f"📅 Created : {created_at}")
+    
+    print("-" * 40)
+    print("🖼️ DOWNLOADING PROFILE PICTURE ...")
 
+    # 1. get the image url
+    avatar_url = profile_data.get("avatar_url")
+
+    # 2. check if url exists 
+    if avatar_url:
+        # send a specific requests for the image
+        # .stream=True büyük dosyalar için iyidir ama şimdilik düz yapalım
+        image_response = requests.get(avatar_url)
+        
+        if image_response.status_code == 200:
+            # 3. save the file (binary mode 'wb)
+            # Dosya adını 'github_avatar.jpg' yapıyoruz
+            with open("github_avatar.jpg", "wb") as file:
+                # ⚠️ CRITICAL  : Use .content (Binary), NOT .text
+                file.write(image_response.content)
+
+            print("✅ Successful! Image saved as 'github_avatar.jpg'")
+
+        else:
+            print("❌ Failed to download image.")
 else:
     print(f"❌ Error! User not found. Status Code : {response.status_code}")
